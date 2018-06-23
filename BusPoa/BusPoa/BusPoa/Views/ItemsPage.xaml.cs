@@ -10,17 +10,20 @@ using Xamarin.Forms.Xaml;
 using BusPoa.Models;
 using BusPoa.Views;
 using BusPoa.ViewModels;
+using Xamarin.Forms.Maps;
 
 namespace BusPoa.Views
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class ItemsPage : ContentPage
-	{
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class ItemsPage : ContentPage
+    {
         ItemsViewModel viewModel;
 
         public ItemsPage()
         {
             InitializeComponent();
+
+            MyMap.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(37, -122), Distance.FromMiles(1)));
 
             BindingContext = viewModel = new ItemsViewModel();
         }

@@ -4,6 +4,7 @@
             xmlns:views="clr-namespace:BusPoa.Views"
             x:Class="BusPoa.Views.MainPage">
     <TabbedPage.Children>
+        
         <NavigationPage Title="Browse">
             <NavigationPage.Icon>
                 <OnPlatform x:TypeArguments="FileImageSource">
