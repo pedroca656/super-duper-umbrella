@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
              x:Class="BusPoa.Views.ItemsPage"
-              Title="{Binding Title}"
+              Title="BusPoa"
              x:Name="BrowseItemsPage">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add" Clicked="AddItem_Clicked">
+        <ToolbarItem Text="{Binding lblBtTrocar}" Clicked="btTrocarItem_Clicked" >
             <ToolbarItem.Icon>
                 <OnPlatform x:TypeArguments="FileImageSource">
                     <On Platform="UWP" Value="add.png"/>
@@ -17,13 +17,13 @@
     <ContentPage.Content>
         <StackLayout>
             
-            <maps:Map WidthRequest="320" HeightRequest="200"
+            <maps:Map WidthRequest="320" HeightRequest="200" IsVisible="False"
                       x:Name="MyMap"
                       IsShowingUser="true"
-                      MapType="Hybrid"
                       />
             
-            <ListView x:Name="ItemsListView" 
+            
+            <!--<ListView x:Name="ItemsListView" 
                 ItemsSource="{Binding Items}"
                 VerticalOptions="FillAndExpand"
                  HasUnevenRows="true"
@@ -48,7 +48,7 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </ListView>-->
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

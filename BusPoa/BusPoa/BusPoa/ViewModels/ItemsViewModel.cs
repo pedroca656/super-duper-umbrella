@@ -15,9 +15,14 @@ namespace BusPoa.ViewModels
         public ObservableCollection<Item> Items { get; set; }
         public Command LoadItemsCommand { get; set; }
 
+
+        private string _lblBtTrocar = "Perando Bus";
+        public string lblBtTrocar { get { return _lblBtTrocar; }
+            set { SetProperty<string>(ref _lblBtTrocar, value); } }
+
         public ItemsViewModel()
         {
-            Title = "Browse";
+            Title = "";
             Items = new ObservableCollection<Item>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 
