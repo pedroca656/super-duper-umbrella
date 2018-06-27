@@ -3,11 +3,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BusPoa.MobileAppService.Models;
 using BusPoa.Models;
 
 namespace BusPoa.Models
 {
-    public class LocalizacaoRepository
+    public class LocalizacaoRepository : ILocalizacaoRepository
 	{
 		private static ConcurrentDictionary<string, Localizacao> items =
 			new ConcurrentDictionary<string, Localizacao>();

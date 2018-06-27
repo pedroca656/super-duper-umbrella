@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using BusPoa.MobileAppService.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -31,12 +32,14 @@ namespace BusPoa.MobileAppService
 		{
 			services.AddMvc();
 			services.AddSingleton<IItemRepository, ItemRepository>();
+            services.AddSingleton<ILocalizacaoRepository, LocalizacaoRepository>();
 
 			services.AddSwaggerGen(c =>
 			{
 				c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
 			});
-		}
+
+        }
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
