@@ -20,6 +20,13 @@ namespace BusPoa.ViewModels
         public string lblBtTrocar { get { return _lblBtTrocar; }
             set { SetProperty<string>(ref _lblBtTrocar, value); } }
 
+        private string _lblPickerLinha = "Selecione Sua Linha";
+        public string lblPickerLinha
+        {
+            get { return _lblPickerLinha; }
+            set { SetProperty<string>(ref _lblPickerLinha, value); }
+        }
+
         public ItemsViewModel()
         {
             Title = "";

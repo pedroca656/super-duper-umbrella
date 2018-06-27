@@ -28,6 +28,8 @@ namespace BusPoa.Views
             MyMap.MapType = MapType.Street;
 
             MyMap.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(-30.0277, -51.2287), Distance.FromMiles(1)));
+            MyMap.IsVisible = false;
+            pickerLinha.IsVisible = true;
 
             BindingContext = viewModel = new ItemsViewModel();
         }
@@ -49,16 +51,25 @@ namespace BusPoa.Views
             //await Navigation.PushModalAsync(new NavigationPage(new NewItemPage()));
             if (isMapa)
             {
-                MyMap.IsVisible = false;
+                MyMap.IsVisible = true;
+                pickerLinha.IsVisible = false;
                 viewModel.lblBtTrocar = "Tô no Bus";
                 isMapa = false;
             }
             else
             {
-                MyMap.IsVisible = true;
+                MyMap.IsVisible = false;
+                pickerLinha.IsVisible = true;
                 viewModel.lblBtTrocar = "Perando Bus";
                 isMapa = true;
             }
+
+        }
+
+        void OnPickerSelectedIndexChanged(object sender, EventArgs e)
+        {
+            //codigo do que fazer quando troca 
+            //envia para o banco as informações do gps
 
         }
 

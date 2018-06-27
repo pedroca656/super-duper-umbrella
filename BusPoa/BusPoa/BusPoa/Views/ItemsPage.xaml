@@ -21,8 +21,15 @@
                       x:Name="MyMap"
                       IsShowingUser="true"
                       />
-            
-            
+
+            <Picker Title="{Binding lblPickerLinha}" SelectedIndexChanged="OnPickerSelectedIndexChanged" x:Name="pickerLinha">
+                <Picker.Items>
+                    <x:String>Linha 1</x:String>
+                    <x:String>Linha 2</x:String>
+                    <x:String>Linha 3</x:String>
+                </Picker.Items>
+            </Picker>
+
             <!--<ListView x:Name="ItemsListView" 
                 ItemsSource="{Binding Items}"
                 VerticalOptions="FillAndExpand"
