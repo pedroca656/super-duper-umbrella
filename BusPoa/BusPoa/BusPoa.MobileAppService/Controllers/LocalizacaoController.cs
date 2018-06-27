@@ -27,7 +27,7 @@ namespace BusPoa.MobileAppService.Controllers
         [HttpGet("{Id}")]
         public IActionResult Get(string id)
         {
-            return Ok(ItemRepository.GetLast());
+            return Ok(ItemRepository.GetLast(id));
         }
 
 

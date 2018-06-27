@@ -14,6 +14,7 @@ using Xamarin.Forms.Maps;
 using System.Threading;
 using System.Diagnostics;
 using Plugin.Geolocator;
+using BusPoa.Services;
 
 namespace BusPoa.Views
 {
@@ -26,17 +27,8 @@ namespace BusPoa.Views
         public static CancellationTokenSource CancellationToken { get; set; }
         List<Localizacao> listaTeste;
 
-        private class Localizacao
-        {
-            double lat;
-            double lon;
 
-            public Localizacao(double la, double lo)
-            {
-                lat = la;
-                lon = lo;
-            }
-        }
+        public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>();
 
         public ItemsPage()
         {
@@ -51,7 +43,21 @@ namespace BusPoa.Views
             pickerLinha.IsVisible = true;
             pickerLinhaEspera.IsVisible = false;
 
+            CancellationToken = new CancellationTokenSource();
+
             BindingContext = viewModel = new ItemsViewModel();
+
+            getlocation();
+        }
+
+        async void getlocation()
+        {
+            var locator = CrossGeolocator.Current;
+            locator.DesiredAccuracy = 50;
+
+            var position = await locator.GetPositionAsync(TimeSpan.FromSeconds(10));
+            MyMap.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(position.Latitude, position.Longitude), Distance.FromMiles(1)));
+
         }
 
         //async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
@@ -76,6 +82,7 @@ namespace BusPoa.Views
                 pickerLinhaEspera.IsVisible = true;
                 viewModel.lblBtTrocar = "Tô no Bus";
                 isMapa = false;
+                CancellationToken.Cancel();
             }
             else
             {
@@ -103,7 +110,7 @@ namespace BusPoa.Views
                 {
                     //5000 = 5 segundos, 10000 = 10 segundos
                     CancellationToken.Token.ThrowIfCancellationRequested();
-                    await Task.Delay(10000, CancellationToken.Token).ContinueWith(async (arg) =>
+                    await Task.Delay(3000, CancellationToken.Token).ContinueWith(async (arg) =>
                     {
 
                         if (!CancellationToken.Token.IsCancellationRequested)
@@ -120,8 +127,21 @@ namespace BusPoa.Views
                             double longitude = position.Longitude;
                             double latitude = position.Latitude;
 
+                            var l = new Localizacao()
+                            {
+                                //Id = Guid.NewGuid().ToString(),
+                                Data = DateTime.Now,
+                                Linha = (string)pickerLinha.SelectedItem,
+                                Latitude = latitude,
+                                Longitude = longitude
+                            };
+
+                            MessagingCenter.Send(this, "AddLocalizacao", l);
+
+                            var x = await  ((AzureDataStore)DataStore).AddLocalizacaoAsync(l);
+
                             //adiciona na lista de testes fingindo que eh o banco
-                            listaTeste.Add(new Localizacao(latitude, longitude));
+                            listaTeste.Add(l);
 
                             string longit = string.Format("{0:0.0000000}", longitude);
                             string lat = string.Format("{0:0.0000000}", latitude);
@@ -139,11 +159,54 @@ namespace BusPoa.Views
 
         }
 
-        void OnPickerLinhaEsperaSelectedIndexChanged(object sender, EventArgs e)
+        async void OnPickerLinhaEsperaSelectedIndexChanged(object sender, EventArgs e)
         {
             //codigo do que fazer quando troca 
             //recebe do banco as informacoes da linha selecionada
 
+
+            CancellationToken = new CancellationTokenSource();
+            while (!CancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    //5000 = 5 segundos, 10000 = 10 segundos
+                    CancellationToken.Token.ThrowIfCancellationRequested();
+                    await Task.Delay(5000, CancellationToken.Token).ContinueWith(async (arg) =>
+                    {
+
+                        if (!CancellationToken.Token.IsCancellationRequested)
+                        {
+                            CancellationToken.Token.ThrowIfCancellationRequested();
+
+                            //aqui pega as informacoes do banco e coloca no mapa
+
+                            
+
+                            var x = await ((AzureDataStore)DataStore).GetLocalizacaoAsync((string)pickerLinhaEspera.SelectedItem);
+
+                            if (x == null)
+                            {
+                                var xx = 0;
+                            }
+
+                            string longit = string.Format("{0:0.0000000}", x.Longitude);
+                            string lat = string.Format("{0:0.0000000}", x.Latitude);
+
+                            Debug.WriteLine("Lendo \nLongitude: " + longit + "\nLatitude: " + lat);
+
+
+                            MyMap.Pins.Clear();
+                            MyMap.Pins.Add(new Pin() { Position = new Position(x.Latitude, x.Longitude), Type = PinType.Place, Label = (string)pickerLinhaEspera.SelectedItem });
+                        }
+                    });
+
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("EX 1: " + ex.Message);
+                }
+            }
         }
 
         protected override void OnAppearing()

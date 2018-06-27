@@ -20,9 +20,9 @@ namespace BusPoa.Models
 			//Add(new Item { Id = Guid.NewGuid().ToString(), Text = "Item 3", Description = "This is an item description." });
 		}
 
-	    public Localizacao GetLast()
+	    public Localizacao GetLast(string linha)
 	    {
-	        var ret = items.Values.OrderByDescending(o => o.Data).FirstOrDefault();
+	        var ret = items.Values.Where(w=> w.Linha.Equals(linha, StringComparison.OrdinalIgnoreCase)).OrderByDescending(o => o.Data).FirstOrDefault();
 	        return ret;
 	    }
 

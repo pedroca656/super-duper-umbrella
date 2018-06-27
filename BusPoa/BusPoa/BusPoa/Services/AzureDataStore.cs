@@ -20,9 +20,32 @@ namespace BusPoa.Services
 			client.BaseAddress = new Uri($"{App.AzureBackendUrl}/");
 
 			items = new List<Item>();
-		}
+        }
 
-		public async Task<IEnumerable<Item>> GetItemsAsync(bool forceRefresh = false)
+        public async Task<Localizacao> GetLocalizacaoAsync(string linha)
+        {
+            if (CrossConnectivity.Current.IsConnected)
+            {
+                var json = await client.GetStringAsync($"api/localizacao/{linha}");
+                return await Task.Run(() => JsonConvert.DeserializeObject<Localizacao>(json));
+            }
+
+            return null;
+        }
+        public async Task<bool> AddLocalizacaoAsync(Localizacao item)
+        {
+            if (item == null || !CrossConnectivity.Current.IsConnected)
+                return false;
+
+            var serializedItem = JsonConvert.SerializeObject(item);
+
+            var response = await client.PostAsync($"api/localizacao", new StringContent(serializedItem, Encoding.UTF8, "application/json"));
+
+            return response.IsSuccessStatusCode;
+        }
+
+
+        public async Task<IEnumerable<Item>> GetItemsAsync(bool forceRefresh = false)
 		{
 			if (forceRefresh && CrossConnectivity.Current.IsConnected)
 			{
