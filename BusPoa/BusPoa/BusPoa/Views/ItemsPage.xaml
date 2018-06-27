@@ -21,6 +21,7 @@
                       x:Name="MyMap"
                       IsShowingUser="true"
                       MapType="Hybrid"
+                      IsVisible="False"
                       />
             
             <ListView x:Name="ItemsListView" 
