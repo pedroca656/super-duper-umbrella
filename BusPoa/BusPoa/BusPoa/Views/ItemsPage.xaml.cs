@@ -18,31 +18,59 @@ namespace BusPoa.Views
     public partial class ItemsPage : ContentPage
     {
         ItemsViewModel viewModel;
+        bool isMapa = false;
+        //string lblBtTrocar = "Estou Esperando um Ônibus";
 
         public ItemsPage()
         {
             InitializeComponent();
 
-            MyMap.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(37, -122), Distance.FromMiles(1)));
+            MyMap.MapType = MapType.Street;
+
+            MyMap.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(-30.0277, -51.2287), Distance.FromMiles(1)));
+            MyMap.IsVisible = false;
+            pickerLinha.IsVisible = true;
 
             BindingContext = viewModel = new ItemsViewModel();
         }
 
-        async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
+        //async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
+        //{
+        //    var item = args.SelectedItem as Item;
+        //    if (item == null)
+        //        return;
+
+        //    await Navigation.PushAsync(new ItemDetailPage(new ItemDetailViewModel(item)));
+
+        //    // Manually deselect item.
+        //    ItemsListView.SelectedItem = null;
+        //}
+
+        void btTrocarItem_Clicked(object sender, EventArgs e)
         {
-            var item = args.SelectedItem as Item;
-            if (item == null)
-                return;
+            //await Navigation.PushModalAsync(new NavigationPage(new NewItemPage()));
+            if (isMapa)
+            {
+                MyMap.IsVisible = true;
+                pickerLinha.IsVisible = false;
+                viewModel.lblBtTrocar = "Tô no Bus";
+                isMapa = false;
+            }
+            else
+            {
+                MyMap.IsVisible = false;
+                pickerLinha.IsVisible = true;
+                viewModel.lblBtTrocar = "Perando Bus";
+                isMapa = true;
+            }
 
-            await Navigation.PushAsync(new ItemDetailPage(new ItemDetailViewModel(item)));
-
-            // Manually deselect item.
-            ItemsListView.SelectedItem = null;
         }
 
-        async void AddItem_Clicked(object sender, EventArgs e)
+        void OnPickerSelectedIndexChanged(object sender, EventArgs e)
         {
-            await Navigation.PushModalAsync(new NavigationPage(new NewItemPage()));
+            //codigo do que fazer quando troca 
+            //envia para o banco as informações do gps
+
         }
 
         protected override void OnAppearing()
